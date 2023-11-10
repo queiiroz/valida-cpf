@@ -18,7 +18,13 @@
 
 */
 
-function ValidaCPF(cpfEnviado) {
+const readline = require("node:readline");
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+function CPF(cpfEnviado) {
   Object.defineProperty(this, "cpfLimpo", {
     get: function () {
       return cpfEnviado.replace(/\D+/g, "");
@@ -26,7 +32,7 @@ function ValidaCPF(cpfEnviado) {
   });
 }
 
-ValidaCPF.prototype.valida = function () {
+CPF.prototype.valida = function () {
   if (typeof this.cpfLimpo === "undefined") return false;
   if (this.cpfLimpo.length !== 11) return false;
   if (this.isSequencia()) return false;
@@ -40,7 +46,7 @@ ValidaCPF.prototype.valida = function () {
   return novoCPF === this.cpfLimpo;
 };
 
-ValidaCPF.prototype.somaDigitos = function (cpfParcial) {
+CPF.prototype.somaDigitos = function (cpfParcial) {
   const cpfArray = Array.from(cpfParcial);
 
   let regressivo = cpfArray.length + 1;
@@ -54,16 +60,21 @@ ValidaCPF.prototype.somaDigitos = function (cpfParcial) {
   return digito > 9 ? "0" : String(digito);
 };
 
-ValidaCPF.prototype.isSequencia = function () {
+CPF.prototype.isSequencia = function () {
   const sequencia = this.cpfLimpo[0].repeat(this.cpfLimpo.length);
 
   return sequencia === this.cpfLimpo;
 };
 
-const cpf = new ValidaCPF("070.987.720-03");
+rl.question("Digite seu CPF ", function (cpf) {
+  const cpf1 = new CPF(cpf);
+  const isValid = cpf1.valida();
 
-if (cpf.valida()) {
-  console.log("CPF Válido");
-} else {
-  console.log("CPF Inválido");
-}
+  if (isValid) {
+    console.log("CPF Válido");
+  } else {
+    console.log("CPF Inválido");
+  }
+
+  rl.close();
+});
